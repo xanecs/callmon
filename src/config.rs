@@ -8,6 +8,7 @@ use rustc_serialize::json;
 pub struct Config {
     pub mqtt: String,
     pub callmon: String,
+    pub topic: String,
 }
 
 impl Config {

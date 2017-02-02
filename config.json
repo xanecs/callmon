@@ -1,4 +1,5 @@
 {
   "mqtt": "iot.eclipse.org:1883",
-  "callmon": "10.0.0.1:1012"
+  "callmon": "10.0.0.1:1012",
+  "topic": "call"
 }

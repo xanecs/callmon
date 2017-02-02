@@ -40,7 +40,7 @@ fn main() {
                         let j = m.to_json();
                         println!("{}", j);
 
-                        let topic = "callmon";
+                        let topic: &str = &config.topic;
                         match mqtt_client.publish(topic, j.to_string(), PubOpt::at_least_once()) {
                             Err(e) => { println!("Error: {:?}", e); }
                             Ok(_) => {}
