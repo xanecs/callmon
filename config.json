@@ -1,5 +1,5 @@
 {
-  "mqtt": "iot.eclipse.org:1883",
+  "redis": "redis://127.0.0.1",
   "callmon": "10.0.0.1:1012",
   "topic": "call"
 }

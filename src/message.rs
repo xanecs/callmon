@@ -27,6 +27,7 @@ impl Message {
         let mut fields: Vec<&str> = line.split(';').collect();
 
         let datetime = try!(parse_datetime(fields[0]));
+        println!("{:?}", datetime);
         let connection_id = try!(u32::from_str(fields[2]));
         let event = try!(Event::parse(fields.split_off(1)));
         Ok(Message{timestamp: datetime, connection_id: connection_id, event: event})
@@ -87,5 +88,5 @@ impl ToJson for Message {
 }
 
 fn parse_datetime(s: &str) -> Result<NaiveDateTime, chrono::ParseError> {
-    NaiveDateTime::parse_from_str(s, "%d.%m.%Y %T")
+    NaiveDateTime::parse_from_str(s, "%d.%m.%y %T")
 }
