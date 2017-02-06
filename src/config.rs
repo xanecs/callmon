@@ -6,7 +6,7 @@ use rustc_serialize::json;
 #[derive(Debug)]
 #[derive(RustcDecodable)]
 pub struct Config {
-    pub mqtt: String,
+    pub redis: String,
     pub callmon: String,
     pub topic: String,
 }

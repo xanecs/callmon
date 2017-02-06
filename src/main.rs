@@ -3,28 +3,21 @@ mod error;
 mod config;
 
 extern crate chrono;
-extern crate mqtt3;
-extern crate netopt;
-extern crate mqttc;
+extern crate redis;
 extern crate rustc_serialize;
 
 use std::net::{TcpStream};
 use std::io::{BufRead, BufReader};
-use std::time::Duration;
 use rustc_serialize::json::ToJson;
-use mqttc::{PubOpt, PubSub};
 use config::Config;
 
 
 fn main() {
     let config = Config::load_from_file("config.json").expect("Could not load config file");
-
-    let netopts = netopt::NetworkOptions::new();
-    let mut mqtt_opts = mqttc::ClientOptions::new();
-    mqtt_opts.set_reconnect(mqttc::ReconnectMethod::ReconnectAfter(Duration::from_secs(1)));
-    let mqtt_address: &str = &config.mqtt;
-    let mut mqtt_client = mqtt_opts.connect(mqtt_address, netopts)
-        .expect("Error connecting to server");
+    let topic: &str = &config.topic;
+    let redis_address: &str = &config.redis;
+    let redis_client = redis::Client::open(redis_address).expect("Could not connect to redis");
+    let redis_con = redis_client.get_connection().expect("Could not initialize redis connection");
 
     let callmon_address: &str = &config.callmon;
     let stream = TcpStream::connect(callmon_address)
@@ -37,11 +30,10 @@ fn main() {
             Ok(_) => {
                 match message::Message::parse_from_str(&line) {
                     Ok(m) => {
-                        let j = m.to_json();
+                        let j = m.to_json().to_string();
                         println!("{}", j);
-
-                        let topic: &str = &config.topic;
-                        match mqtt_client.publish(topic, j.to_string(), PubOpt::at_least_once()) {
+                        let result = redis::cmd("PUBLISH").arg(topic).arg(j).query::<i32>(&redis_con);
+                        match result {
                             Err(e) => { println!("Error: {:?}", e); }
                             Ok(_) => {}
                         }

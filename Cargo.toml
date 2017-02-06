@@ -5,7 +5,5 @@ authors = ["Leon Bentrup <leon@leonadi.de>"]
 
 [dependencies]
 chrono = "0.2"
-mqtt3 = "0.1"
-mqttc = "0.1"
-netopt = "0.1"
+redis = "0.8"
 rustc-serialize = "0.3"
